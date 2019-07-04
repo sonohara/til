@@ -1,6 +1,10 @@
 ### イベントハンドラ
+公式
+https://jp.vuejs.org/v2/guide/events.html
+
 基本
-- `v-click:xxx` または `@xxx` を使う
+
+`v-click:xxx` または `@xxx` を使う。
 
 ```html
 <template>
