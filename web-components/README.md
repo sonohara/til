@@ -43,6 +43,9 @@ window.customElements.define('my-hoge', MyHoge)
 
 使う
 ```html
+...
+<script src="./my-hoge.js" type="module"></script>
+...
 <my-hoge></my-hoge>
 ```
 - 普通のタグと同じように使う
@@ -66,7 +69,73 @@ shadowRoot.innerHTML = '<h1>Hello Shadow DOM</h1>'
   - タグによっては追加できない場合もある
 
 #### slot
-TODO
+> スロットはコンポーネント内にあるプレースホルダで、ユーザーはこれに独自のマークアップを入れることができます。... 基本的には、「ユーザーのマックアップをここでレンダリングしてください」と言っているのと同じです。
+
+Shadow DOM を持つ要素はそのままだと子要素を表示しない
+```html
+<div id="shadow">
+    Shadow   // 表示されない
+</div>
+<script>
+    document.querySelector("#shadow").attachShadow({mode:"open"})
+</script>
+```
+
+Shadow Dom 内に `<slot></slot>` 要素があると、そこに子要素が表示されるようになる（ブラウザで Shadow DOM と Light DOM が合成される）。
+```html
+<div id="shadow">
+    Shadow   // 表示される
+</div>
+<script>
+    const shadowRoot = document.querySelector("#shadow").attachShadow({mode:"open"});
+    shadowRoot.innerHTML = `
+        <slot></slot>
+    `
+</script>
+```
+
+slot は名前を付けると、明示的に表示するDOMを指定できる。
+```html
+<div id="shadow">
+    <div slot="header">Header</div>
+    <div slot="body">Body</div>
+    <div slot="footer">Footer</div>
+</div>
+<script>
+    const shadowRoot = document.querySelector("#shadow").attachShadow({mode:"open"});
+    shadowRoot.innerHTML = `
+        <slot name="header"></slot>
+        <slot name="body"></slot>
+        <slot name="footer"></slot>
+    `
+</script>
+```
+
+DOMの順番と表示順は一致している必要はない。
+```html
+// これでもOK
+<div slot="footer">Footer</div>
+<div slot="header">Header</div>
+<div slot="body">Body</div>
+```
+
+紐付けは1対1じゃなくてもOK。
+ただし、Shadow　DOM 側で名前がかぶっていると最初の要素しか表示されない。
+```html
+<div id="shadow">
+    <div slot="contents">Contents1</div>
+    <div slot="contents">Contents2</div>
+    <div slot="contents">Contents3</div>
+</div>
+<script>
+    const shadowRoot = document.querySelector("#shadow").attachShadow({mode:"open"});
+    shadowRoot.innerHTML = `
+        <slot name="contents"></slot>   // Contents1-3が表示される
+        <slot name="contents"></slot>   // なにも表示されない
+    `
+</script>
+```
+
 
 #### style
 TODO
@@ -74,3 +143,5 @@ TODO
 ## 参考
 - https://tech.actindi.net/2019/06/25/093335?utm_source=feed
 - https://developers.google.com/web/fundamentals/web-components/customelements?hl=ja
+- https://developers.google.com/web/fundamentals/web-components/shadowdom?hl=ja
+- https://speakerdeck.com/aggre/realistic-web-components

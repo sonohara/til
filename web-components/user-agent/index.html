@@ -11,5 +11,16 @@
     <h1>Web Components</h1>
     <h2>User Agent Tag</h2>
     <user-agent></user-agent>
+    <div id="shadow">
+        <div slot="contents">Contents1</div>
+        <div slot="contents">Contents2</div>
+        <div slot="contents">Contents3</div>
+    </div>
+    <script>
+        const shadowRoot = document.querySelector("#shadow").attachShadow({mode:"open"});
+        shadowRoot.innerHTML = `
+            <slot name="contents"></slot>
+        `
+    </script>
 </body>
 </html>
